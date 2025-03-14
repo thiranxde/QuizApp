@@ -1,8 +1,10 @@
 package com.example.quizApp.service;
 
-import com.example.quizApp.Question;
+import com.example.quizApp.model.Question;
 import com.example.quizApp.dao.QuestionDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,16 +13,26 @@ import java.util.List;
 public class QuestionService {
     @Autowired
     QuestionDao questionDao;
-    public List<Question> getAllQuestions() {
-        return questionDao.findAll();
+    public ResponseEntity<List<Question>> getAllQuestions() {
+        try {
+            return new ResponseEntity<>(questionDao.findAll(), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(questionDao.findAll(), HttpStatus.BAD_REQUEST);
     }
 
-    public List<Question> getQuestionsByCategory(String category) {
-        return questionDao.findQuestionByCategory(category);
+    public ResponseEntity<List<Question>> getQuestionsByCategory(String category) {
+        try {
+            return new ResponseEntity(questionDao.findQuestionByCategory(category), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity(questionDao.findQuestionByCategory(category), HttpStatus.BAD_REQUEST);
     }
 
-    public String addQuestion(Question question) {
+    public ResponseEntity<String> addQuestion(Question question) {
         questionDao.save(question);
-        return "Success";
+        return new ResponseEntity<>("Success",HttpStatus.CREATED);
     }
 }
